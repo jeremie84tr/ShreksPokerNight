@@ -1,0 +1,3 @@
+[submodule "Assets/addons/OpenAI-API-dotnet"]
+	path = Assets/addons/OpenAI-API-dotnet
+	url = https://github.com/OkGoDoIt/OpenAI-API-dotnet.git
