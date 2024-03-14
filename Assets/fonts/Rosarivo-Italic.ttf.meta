@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 3f66190df0f851b41ba93a40540b1a98
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Rosarivo
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c4667bda11a779444a6a2ae190a8a2af, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
