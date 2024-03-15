@@ -14,7 +14,7 @@ namespace Poker
             this.derniereMise = 0;
         }
 
-        public void PlayRandom(Jeu jeu) {
+        public void UseBrain(Jeu jeu) {
 
             Debug.Log("thinking very smert");
 
