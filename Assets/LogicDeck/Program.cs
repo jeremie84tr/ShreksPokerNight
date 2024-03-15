@@ -24,6 +24,7 @@ namespace Poker
             player.Print("player");
 
             deck.Print();
+            deck.PrintScores();
 
         }
     }

@@ -33,7 +33,7 @@ namespace Poker
             Spades      // Pique
         }
 
-        public static Dictionary<Rank, int> Map = new Dictionary<Rank, int>
+        public static Dictionary<Rank, int> Score = new Dictionary<Rank, int>
         {
             { Rank.Two, 1 },
             { Rank.Three, 2 },

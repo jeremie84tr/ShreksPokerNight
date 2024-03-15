@@ -70,9 +70,9 @@ namespace Poker
 
         public void Print() {
             UnityEngine.Debug.Log("poker : " + players.Count + " players");
-            foreach (Hand hand in players)
+            for (int index = 0; index < players.Count; index++)
             {
-                hand.Print("hand");
+                players[index].Print("player "+index);
             }
             string dealerCards = "";
             foreach (var card in dealer)
@@ -80,6 +80,15 @@ namespace Poker
                 dealerCards += card.GetName() + " ";
             }
             UnityEngine.Debug.Log("dealer : " + dealerCards);
+        }
+
+        internal void PrintScores()
+        {
+            for (int index = 0; index < players.Count; index++)
+            {
+                UnityEngine.Debug.Log("score player "+ index + " : " + players[index].CalculateScore(dealer));
+            }
+
         }
 
         // Méthode pour retirer une carte du jeu de cartes
