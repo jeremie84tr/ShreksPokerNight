@@ -10,7 +10,7 @@ namespace Poker
     public class Jeu
     {
         public Deck deck;
-        private List<Player> AIs;
+        public List<Player> AIs;
         public Player player;
         private int playerTurn;
         private int turn = 0;

@@ -43,6 +43,10 @@ namespace Poker
             return CalculateStraightFlushRoyale(allCards);
         }
 
+        public Card GetCard(int index) {
+            return myCards[index];
+        }
+
         private int CalculateHighCard(List<Card> allCards) {//max = 13
             //Debug.Log("carte max");
             return Card.Score[allCards[0].CardRank];
