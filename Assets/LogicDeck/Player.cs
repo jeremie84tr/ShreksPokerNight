@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Poker
@@ -14,11 +15,22 @@ namespace Poker
         }
 
         public void PlayRandom(Jeu jeu) {
-            System.Random rng = new System.Random();
 
             Debug.Log("thinking very smert");
 
-            int playedTokens = ( rng.Next() % (tokens + 2) ) - 1 ;
+            System.Random rng = new System.Random();
+
+            List<int> randoms = new List<int>();
+
+            int size = rng.Next() % 5000000;
+
+            for (int element = 0; element < size; element++)
+            {
+                randoms.Add( rng.Next() % 10 );
+            }
+
+            int playedTokens = randoms[rng.Next() % size];
+            playedTokens = playedTokens > tokens ? tokens : playedTokens;
             playedTokens -= jeu.mise;
 
             if (playedTokens < 0) {
