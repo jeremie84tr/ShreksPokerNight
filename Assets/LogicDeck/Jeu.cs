@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Poker
 {
-    class Jeu
+    public class Jeu
     {
         public Deck deck;
         private List<Player> AIs;
-        private Player player;
+        public Player player;
         private int playerTurn;
         private int turn = 0;
         private int nbJoueurs;
@@ -21,6 +21,7 @@ namespace Poker
         private bool canPlay;
 
         public Jeu(int tokens, int nbJoueurs) {
+            Debug.Log("New Game");
             deck = new Deck(nbJoueurs);
             deck.Shuffle();
 
@@ -105,7 +106,7 @@ namespace Poker
             Debug.Log((winner == -1 ? "player" : ("AI" + winner) ) + " won the game with a score of "+ max );
         }
 
-        internal void Pass(Player player)
+        public void Pass(Player player)
         {
             Debug.Log("couché");
             nbJoueurs -= 1;
@@ -116,7 +117,7 @@ namespace Poker
             }
         }
 
-        internal void Bet(int playedTokens)
+        public void Bet(int playedTokens)
         {
             if(playedTokens == 0) {
                 Debug.Log("suit");
@@ -128,16 +129,12 @@ namespace Poker
             Debug.Log("mise est a : " + mise);
         }
 
-        public static void Test()
+        public static void Test(Jeu monJeu)
         {
-            Jeu monJeu = new Jeu(50,20);
 
             if ( monJeu.turn != monJeu.playerTurn ) {
                 monJeu.TourTermine();
             }
-            Debug.Log("je couche le joueur");
-            monJeu.Pass(monJeu.player);
-            monJeu.TourTermine();
 
         }
     }

@@ -6,7 +6,7 @@ using TMPro;
 public class displaybetvalue : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int value;
+    public static int value;
     public TMP_Text text;
     void Start()
     {

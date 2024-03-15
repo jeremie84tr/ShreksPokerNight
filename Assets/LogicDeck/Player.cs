@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Poker
 {
-    class Player {
+    public class Player {
         public int tokens;
         public Hand hand;
         public int derniereMise;

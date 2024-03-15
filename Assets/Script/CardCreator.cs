@@ -13,7 +13,10 @@ public class CardCreator : MonoBehaviour
     // Start is called before the first frame update
 
     public GameObject card; 
-    public Deck deck;
+
+    public int nbJoueurs;
+
+    public Jeu jeu;
 
     private List<GameObject> myCards;
 
@@ -23,9 +26,8 @@ public class CardCreator : MonoBehaviour
 
     void Start()
     {
-        deck = new Deck();
+        jeu = new Jeu(50,nbJoueurs);
         myCards = new List<GameObject>();
-        deck.Shuffle();
         transform.Rotate(-30F,0F,0F,Space.Self);
         for (int i = 0; i < 9; i++){
             Distrib();
@@ -34,7 +36,7 @@ public class CardCreator : MonoBehaviour
 
     public void Distrib(){
         if (myCards.Count < 9){
-            Card myCard = deck.DrawCard();
+            Card myCard = jeu.deck.DrawCard();
             Debug.Log(myCards.Count);
             if (myCards.Count == 2){
                 cpt = -0.5F;
