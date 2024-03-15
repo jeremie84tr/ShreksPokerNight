@@ -9,7 +9,7 @@ public class test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Program.Test();
+        Jeu.Test();
     }
 
     // Update is called once per frame

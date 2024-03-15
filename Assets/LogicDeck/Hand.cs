@@ -29,43 +29,40 @@ namespace Poker
             {
                 allCards.Add(card);
             }
+            for (int i = 0; i < allCards.Count; i++)
+            {
+                for (int j = 0; j < allCards.Count; j++)
+                {
+                    if (Card.Score[allCards[j].CardRank] < Card.Score[allCards[i].CardRank]) {
+                        Card tmp = allCards[i];
+                        allCards[i] = allCards [j];
+                        allCards[j] = tmp;
+                    }
+                }
+            }
             return CalculateStraightFlushRoyale(allCards);
         }
 
         private int CalculateHighCard(List<Card> allCards) {//max = 13
-            int max = 0;
-            foreach (var card in allCards)
-            {
-                if (Card.Score[card.CardRank] > max) {
-                    max = Card.Score[card.CardRank];
-                }
-            }
-            return max;
+            //Debug.Log("carte max");
+            return Card.Score[allCards[0].CardRank];
         }
 
         private int CalculatePairs(List<Card> allCards) {//max = 41
             int valuePair = 14;
-            
-            List<Card> pairs = new List<Card>();
-            for (int cardIndex = 0; cardIndex < allCards.Count - 2; cardIndex++)
+
+            for (int cardIndex = 0; cardIndex < allCards.Count - 1; cardIndex++)
             {
-                for (int cardTested = cardIndex + 1; cardTested < allCards.Count - 1; cardTested++)
-                {
-                    if (allCards[cardIndex].CardRank == allCards[cardTested].CardRank) {
-                        pairs.Add(allCards[cardIndex]);
-                        allCards.Remove(allCards[cardIndex]);
-                        allCards.Remove(allCards[cardTested]);
+                if (allCards[cardIndex].CardRank == allCards[cardIndex + 1].CardRank) {
+                    for (int pairIndex = 0; pairIndex < allCards.Count - 1; pairIndex++) {
+                        if (pairIndex != cardIndex && pairIndex != cardIndex + 1 && allCards[pairIndex].CardRank == allCards[pairIndex + 1].CardRank) {
+                            //Debug.Log("double paire");
+                            return Card.Score[allCards[cardIndex].CardRank] + Card.Score[allCards[pairIndex].CardRank] + valuePair;
+                        }
                     }
+                    //Debug.Log("paire");
+                    return Card.Score[allCards[cardIndex].CardRank] + valuePair + CalculateHighCard(allCards);
                 }
-            }
-            if (pairs.Count > 0) {
-                if (pairs.Count == 2) {
-                    int score = 0;
-                    for (int i = 0; i < 2; i++) {
-                        score += Card.Score[pairs[i].CardRank] + valuePair * (i + 1);
-                    }
-                }
-                return Card.Score[pairs[0].CardRank] + valuePair + CalculateHighCard(allCards);
             }
             return CalculateHighCard(allCards);
         }
@@ -75,14 +72,11 @@ namespace Poker
             
             for (int cardIndex = 0; cardIndex < allCards.Count - 2; cardIndex++)
             {
-                for (int cardTested = cardIndex + 1; cardTested < allCards.Count - 1; cardTested++)
-                {
-                    for (int cardThird = cardTested + 1; cardThird < allCards.Count; cardThird++)
-                    {
-                        if (allCards[cardIndex].CardRank == allCards[cardTested].CardRank && allCards[cardIndex].CardRank == allCards[cardThird].CardRank) {
-                            return Card.Score[allCards[cardIndex].CardRank] + valueBrelan;
-                        }
-                    }
+                int cardTested = cardIndex + 1;
+                int cardThird = cardTested + 1;
+                if (allCards[cardIndex].CardRank == allCards[cardTested].CardRank && allCards[cardIndex].CardRank == allCards[cardThird].CardRank) {
+                    //Debug.Log("Brelan");
+                    return Card.Score[allCards[cardIndex].CardRank] + valueBrelan;
                 }
             }
             return CalculatePairs(allCards);
@@ -91,15 +85,16 @@ namespace Poker
         private int CalculateStraight(List<Card> allCards) {//max = 69
             int valueStraight = 56;
             
-            allCards.OrderBy(card => card.CardRank);
-            int precedent = Card.Score[allCards[0].CardRank];
-            int index = 1;
-            while (index < allCards.Count && Card.Score[allCards[index].CardRank] == precedent + 1) {
-                precedent = Card.Score[allCards[index].CardRank];
-                index++;
-            }
-            if(index == allCards.Count) {
-                return Card.Score[allCards[index - 1].CardRank] + valueStraight;
+            for (int cardIndex = 0; cardIndex < allCards.Count - 4; cardIndex++)
+            {
+                if (
+                    Card.Score[allCards[cardIndex].CardRank] + 1 == Card.Score[allCards[cardIndex + 1].CardRank] &&
+                    Card.Score[allCards[cardIndex].CardRank] + 2 == Card.Score[allCards[cardIndex + 2].CardRank] &&
+                    Card.Score[allCards[cardIndex].CardRank] + 3 == Card.Score[allCards[cardIndex + 3].CardRank] &&
+                    Card.Score[allCards[cardIndex].CardRank] + 4 == Card.Score[allCards[cardIndex + 4].CardRank]) {
+                    //Debug.Log("Straight");
+                    return Card.Score[allCards[cardIndex].CardRank] + valueStraight;
+                }
             }
             return CalculateBrelan(allCards);
         }
@@ -107,41 +102,44 @@ namespace Poker
         private int CalculateFlush(List<Card> allCards) {//max = 139
             int valueFlush = 70;
 
-            Card.Type type = allCards[0].CardType;
-            int index = 1;
-            while (index < allCards.Count && allCards[index].CardType == type) {
-                index++;
+            List<Card> allCardsFlush = new List<Card>();
+            foreach (var card in allCards)
+            {
+                allCardsFlush.Add(card);
             }
-            if(index == allCards.Count) {
-                return CalculateStraight(allCards) + valueFlush;
+            allCardsFlush.OrderBy(card => card.CardType);
+
+            for (int i = 0; i < allCards.Count - 4; i++)
+            {
+                if (
+                    allCards[i].CardType == allCards[i + 1].CardType &&
+                    allCards[i].CardType == allCards[i + 2].CardType &&
+                    allCards[i].CardType == allCards[i + 3].CardType &&
+                    allCards[i].CardType == allCards[i + 4].CardType)
+                {
+                    //Debug.Log("Flush");
+                    return CalculateStraight(allCards) + valueFlush;
+                }
             }
             return CalculateStraight(allCards);
         }
 
         private int CalculateFull(List<Card> allCards) {//max = 168
             int valueFull = 140;
+            int valueBrelan = 42;
 
-            List<Card.Rank> ranks = new List<Card.Rank>();
-            List<Card> house = new List<Card>();
-            ranks.Add(allCards[0].CardRank);
-            house.Add(allCards[0]);
-            int index = 1;
-            while (index < allCards.Count) {
-                bool isNew = true;
-                foreach (var rank in ranks)
-                {
-                    if(allCards[index].CardRank == rank) {
-                        isNew = false;
+            for (int cardIndex = 0; cardIndex < allCards.Count - 2; cardIndex++)
+            {
+                if (allCards[cardIndex].CardRank == allCards[cardIndex + 1].CardRank && allCards[cardIndex].CardRank == allCards[cardIndex + 2].CardRank) {
+                    for (int pairIndex = 0; pairIndex < allCards.Count - 1; pairIndex++) {
+                        if (pairIndex != cardIndex && pairIndex != cardIndex + 1 && pairIndex != cardIndex + 2 && allCards[pairIndex].CardRank == allCards[pairIndex + 1].CardRank) {
+                            //Debug.Log("full");
+                            return Card.Score[allCards[cardIndex].CardRank] + Card.Score[allCards[pairIndex].CardRank] + valueFull;//a changer
+                        }
                     }
+                    //Debug.Log("Brelan");
+                    return Card.Score[allCards[cardIndex].CardRank] + valueBrelan;
                 }
-                if (isNew) {
-                    ranks.Add(allCards[index].CardRank);
-                    house.Add(allCards[index]);
-                }
-            }
-            if(ranks.Count == 2) {
-                house.OrderBy(card => card.CardRank);
-                return Card.Score[house[1].CardRank] + Card.Score[house[0].CardRank] + valueFull;
             }
             return CalculateFlush(allCards);
         }
@@ -149,20 +147,14 @@ namespace Poker
         private int CalculateFour(List<Card> allCards) {//max = 182
             int valueFour = 169;
             
-            
-            for (int cardIndex = 0; cardIndex < allCards.Count - 2; cardIndex++)
+            for (int cardIndex = 0; cardIndex < allCards.Count - 3; cardIndex++)
             {
-                for (int cardTested = cardIndex + 1; cardTested < allCards.Count - 1; cardTested++)
-                {
-                    for (int cardThird = cardTested + 1; cardThird < allCards.Count; cardThird++)
-                    {
-                        for (int cardFourth = cardThird + 1; cardFourth < allCards.Count; cardFourth++)
-                        {
-                            if (allCards[cardIndex].CardRank == allCards[cardTested].CardRank && allCards[cardIndex].CardRank == allCards[cardThird].CardRank && allCards[cardIndex].CardRank == allCards[cardFourth].CardRank) {
-                                return Card.Score[allCards[cardIndex].CardRank] + valueFour;
-                            }
-                        }
-                    }
+                if (
+                    allCards[cardIndex].CardRank == allCards[cardIndex + 1].CardRank &&
+                    allCards[cardIndex].CardRank == allCards[cardIndex + 2].CardRank &&
+                    allCards[cardIndex].CardRank == allCards[cardIndex + 3].CardRank) {
+                    //Debug.Log("Four");
+                    return Card.Score[allCards[cardIndex].CardRank] + valueFour;
                 }
             }
             return CalculateFull(allCards);
@@ -180,7 +172,6 @@ namespace Poker
             if(index == allCards.Count) { //il est flush
             
                 bool royal = false;
-                allCards.OrderBy(card => card.CardRank);
                 if(allCards[0].CardRank == Card.Rank.Ten) {
                     royal = true;
                 }
@@ -192,10 +183,13 @@ namespace Poker
                 }
                 if(index == allCards.Count) {//il est straight
                     if(royal) {
+                        //Debug.Log("Straight flush royale");
                         return 197;//value straight flush royal
                     }
+                    //Debug.Log("Straight flush");
                     return Card.Score[allCards[index - 1].CardRank] + valueStraightFlush;
                 }
+                //Debug.Log("Straight flush");
                 return CalculateStraight(allCards) + valueFlush;
             }
             return CalculateFour(allCards);
