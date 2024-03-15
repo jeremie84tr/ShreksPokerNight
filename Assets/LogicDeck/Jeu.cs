@@ -18,9 +18,9 @@ namespace Poker
         public int mise;
         public int bank;
 
-        private bool canPlay;
+        private Action<Card> callBack;
 
-        public Jeu(int tokens, int nbJoueurs) {
+        public Jeu(int tokens, int nbJoueurs, Action<Card> callBack) {
             Debug.Log("New Game");
             deck = new Deck(nbJoueurs);
             deck.Shuffle();
@@ -30,10 +30,10 @@ namespace Poker
             player = new Player(tokens,deck.GetHand(0));
             AIs = new List<Player>();
             this.nbJoueurs = nbJoueurs;
+            this.callBack = callBack;
             playerTurn = new System.Random().Next() % nbJoueurs;
             mise = 0;
             bank = 0;
-            canPlay = true;
 
             for (int i = 1; i < nbJoueurs; i++)
             {
@@ -48,7 +48,6 @@ namespace Poker
         }
 
         public void TourTermine() {
-            canPlay = false;
             turn = (turn + 1) % nbJoueurs;
 
             if( ( GetPlayer(turn).derniereMise == mise && mise > 0 ) || AIs.Count + ( (playerTurn < nbJoueurs) ? 1 : 0 ) == 1 ) {
@@ -58,6 +57,7 @@ namespace Poker
                     return;
                 }
                 deck.ServeDealer();
+                callBack(deck.dealer[deck.dealer.Count - 1]);
                 foreach (var ai in AIs)
                 {
                     ai.derniereMise = 0;
@@ -70,7 +70,6 @@ namespace Poker
                 AIs[turn > playerTurn ? turn - 1 : turn].PlayRandom(this);
             } else {
                 Debug.Log("au tour du joueur");
-                canPlay = true;
             }
         }
 
