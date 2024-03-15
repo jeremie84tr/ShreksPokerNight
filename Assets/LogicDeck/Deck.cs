@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using UnityEngine;
 
 namespace Poker
 {
@@ -10,21 +9,26 @@ namespace Poker
     {
         public List<Card> cards;
 
-        public Deck()
+        public List<Card> dealer;
+
+        public List<Hand> players;
+
+        public Deck(int nbPlayers)
         {
             cards = new List<Card>(); // Initialisation de la liste de cartes
+            dealer = new List<Card>();
+            players = new List<Hand>();
+
+            for (int player = 0; player < nbPlayers; player++)
+            {
+                players.Add(new Hand());
+            }
             foreach (Card.Rank rank in Enum.GetValues(typeof(Card.Rank)))
             {
                 foreach (Card.Type type in Enum.GetValues(typeof(Card.Type)))
                 {
-                    // Création d'une nouvelle map pour chaque combinaison de rang et type
-                    Dictionary<Card.Rank, int> powerRankMap = new Dictionary<Card.Rank, int>();
-                    foreach (Card.Rank innerRank in Enum.GetValues(typeof(Card.Rank)))
-                    {
-                        // Assignation d'une valeur arbitraire pour chaque rang dans la map
-                        powerRankMap.Add(innerRank, (int)innerRank);
-                    }
-                    cards.Add(new Card(rank, type, powerRankMap));
+                    //ajout des cartes
+                    cards.Add(new Card(rank, type));
                 }
             }
         }
@@ -32,7 +36,7 @@ namespace Poker
         // Méthode pour mélanger les cartes dans le jeu de cartes
         public void Shuffle()
         {
-            Random rng = new Random();
+            System.Random rng = new System.Random();
             int n = cards.Count;
             while (n > 1)
             {
@@ -42,6 +46,49 @@ namespace Poker
                 cards[k] = cards[n];
                 cards[n] = value;
             }
+        }
+
+        public void Serve() {
+            for (int i = 0; i < 2; i++) {
+                foreach (Hand hand in players) {
+                    hand.addCard(DrawCard());
+                }
+            }
+        }
+
+        internal void ServeDealer()
+        {
+            dealer.Add(DrawCard());
+        }
+
+        public Hand GetHand(int index) {
+            if (index < players.Count) {
+                return players[index];
+            }
+            return new Hand();
+        }
+
+        public void Print() {
+            UnityEngine.Debug.Log("poker : " + players.Count + " players");
+            for (int index = 0; index < players.Count; index++)
+            {
+                players[index].Print("player "+index);
+            }
+            string dealerCards = "";
+            foreach (var card in dealer)
+            {
+                dealerCards += card.GetName() + " ";
+            }
+            UnityEngine.Debug.Log("dealer : " + dealerCards);
+        }
+
+        internal void PrintScores()
+        {
+            for (int index = 0; index < players.Count; index++)
+            {
+                UnityEngine.Debug.Log("score player "+ index + " : " + players[index].CalculateScore(dealer));
+            }
+
         }
 
         // Méthode pour retirer une carte du jeu de cartes

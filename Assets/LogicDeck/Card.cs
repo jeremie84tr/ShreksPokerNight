@@ -33,7 +33,7 @@ namespace Poker
             Spades      // Pique
         }
 
-        public static Dictionary<Rank, int> Map = new Dictionary<Rank, int>
+        public static Dictionary<Rank, int> Score = new Dictionary<Rank, int>
         {
             { Rank.Two, 1 },
             { Rank.Three, 2 },
@@ -52,18 +52,16 @@ namespace Poker
 
         public Rank CardRank { get; } // récuperer le rang de la carte
         public Type CardType { get; } // récuperer le type de la carte
-        public Dictionary<Rank, int> PowerRankMap { get; } // Map contenant les rangs de puissance
 
-        public Card(Rank rank, Type type, Dictionary<Rank, int> powerRankMap)
+        public Card(Rank rank, Type type)
         {
             CardRank = rank;
             CardType = type;
-            PowerRankMap = powerRankMap;
         }
 
-        public String GetName()
+        public string GetName()
         {
-            String name = "";
+            string name = "";
 
             switch (this.CardRank)
             {
